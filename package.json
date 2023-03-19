@@ -25,7 +25,7 @@
     "moment": "^2.29.4",
     "puppeteer-core": "^13.5.1",
     "puppeteer-worker": "^3.3.1",
-    "puppeteer-worker-job-builder": "^2.4.0",
+    "puppeteer-worker-job-builder": "^2.4.1",
     "tu9nioc": "^1.1.1",
     "yargs": "17.5.1"
   },
