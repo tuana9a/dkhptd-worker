@@ -25,11 +25,12 @@ export async function launch(initConfig: Config) {
   update(cfg, initConfig);
   correctConfig(cfg);
 
-  logger.use(cfg.logDest);
-  logger.info(cfg.toString());
   ensureDirExists(cfg.tmpDir);
   ensureDirExists(cfg.logDir);
   ensureDirExists(cfg.userDataDir);
+
+  logger.use(cfg.logDest);
+  logger.info(cfg.toString());
 
   const workerController: WorkerController = ioc.getBean("workerController").getInstance();
   const supportJobsDb: SupportJobsDb = ioc.getBean("supportJobsDb").getInstance();
