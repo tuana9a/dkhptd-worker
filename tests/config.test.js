@@ -17,7 +17,6 @@ describe("test config", () => {
       httpWorkerPullConfigUrl: undefined,
       rabbitmqConnectionString: undefined,
       maxTry: 10,
-      puppeteerMode: "default",
       puppeteerLaunchOption: {
         defaultViewport: {
           width: 1920,
@@ -33,7 +32,6 @@ describe("test config", () => {
       tmpDir: "otherTmpDir",
       secret: "iloveyou",
       maxTry: 11,
-      puppeteerMode: "visible",
     });
     expect(config.toJson()).toEqual({
       workerType: "http",
@@ -49,7 +47,6 @@ describe("test config", () => {
       httpWorkerPullConfigUrl: undefined,
       rabbitmqConnectionString: undefined,
       maxTry: 11,
-      puppeteerMode: "visible",
       puppeteerLaunchOption: {
         headless: false,
         slowMo: 10,

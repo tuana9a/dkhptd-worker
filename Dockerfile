@@ -27,15 +27,18 @@ WORKDIR /app
 
 COPY package.json .
 
-RUN npm install --only=production
+COPY tsconfig.json .
 
-# placeholder to config.json
-RUN echo {} > config.json
+RUN npm install
 
-RUN mkdir jobs/
+COPY bin bin
 
-COPY bin/ bin/
+RUN chmod +x ./bin/dkhptd-worker
 
-COPY dist/ dist/
+COPY config.json.example config.json
 
-CMD ./bin/dkhptd-worker --config-file config.json --mode docker
+COPY src src
+
+RUN npx tsc
+
+CMD ./bin/dkhptd-worker --config-file config.json

@@ -10,18 +10,12 @@ const cliParser = yargs
   .option("worker-type", {
     type: "string",
     requiresArg: false,
-    choices: ["http", "rabbit", "standalone"],
+    choices: ["http", "rabbit", "rabbit_v1", "standalone"],
   })
   .option("rabbitmq", {
     describe: "the rabbitmq connection string",
     type: "string",
     requiresArg: false,
-  })
-  .option("mode", {
-    type: "string",
-    requiresArg: false,
-    choices: ["default", "headless", "visible", "docker"],
-    describe: "The puppeteer mode",
   })
   .option("log-dest", {
     type: "string",
@@ -56,5 +50,4 @@ launch({
   accessToken: options.accessToken,
   rabbitmqConnectionString: options.rabbitmq,
   maxTry: options.maxTry,
-  puppeteerMode: options.mode,
 });
