@@ -38,13 +38,13 @@ export class RabbitWorkerV1 {
             try {
               logger.info(`Received ${msg.fields.routingKey} ${toJson(request, 2)}`);
               let onDoing = (doing: DoingInfo) => {
-                channel.publish(ExchangeName.WORKER_DOING, "", toBuffer(toJson({ workerId: cfg.workerId, doing })));
+                channel.publish(ExchangeName.WORKER_DOING, "", toBuffer(toJson({ workerId: cfg.id, doing })));
               };
 
               if (cfg.logWorkerDoing) {
                 onDoing = (doing: DoingInfo) => {
                   logger.info(`Doing ${request.id} ${toJson(doing, 2)}`);
-                  channel.publish(ExchangeName.WORKER_DOING, "", toBuffer(toJson({ workerId: cfg.workerId, doing })));
+                  channel.publish(ExchangeName.WORKER_DOING, "", toBuffer(toJson({ workerId: cfg.id, doing })));
                 };
               }
               const { logs, vars } = await puppeteerWorkerController.do(request, onDoing);
@@ -53,7 +53,7 @@ export class RabbitWorkerV1 {
               const newIv = crypto.randomBytes(16).toString("hex");
               const eResult = c(cfg.amqpEncryptionKey).e(toJson({
                 id: request.id,
-                workerId: cfg.workerId,
+                workerId: cfg.id,
                 logs,
                 vars,
               }), newIv);
@@ -65,7 +65,7 @@ export class RabbitWorkerV1 {
               const newIv = crypto.randomBytes(16).toString("hex");
               const eResult = c(cfg.amqpEncryptionKey).e(toJson({
                 id: request.id,
-                workerId: cfg.workerId,
+                workerId: cfg.id,
                 err: toPrettyErr(err),
               }), newIv);
 
@@ -74,7 +74,7 @@ export class RabbitWorkerV1 {
             channel.ack(msg);
           }, { noAck: false });
         });
-        setInterval(() => channel.publish(ExchangeName.WORKER_PING, "", toBuffer(toJson({ workerId: cfg.workerId }))), 3000);
+        setInterval(() => channel.publish(ExchangeName.WORKER_PING, "", toBuffer(toJson({ workerId: cfg.id }))), 3000);
       });
     });
   }

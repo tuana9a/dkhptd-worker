@@ -3,15 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node ./bin/dkhptd-worker --config-file config.json",
-    "dev": "nodemon ./bin/dkhptd-worker --config-file config.json",
+    "start": "node launch.js --config-file config.json",
+    "dev": "nodemon launch.js --config-file config.json",
     "test": "jest test",
     "test:watch": "jest --watch test",
-    "build": "tsc",
-    "build:watch": "tsc --watch"
-  },
-  "bin": {
-    "dkhptd-worker": "./bin/dkhptd-worker"
+    "build": "tsc --declaration",
+    "build:watch": "tsc --watch --declaration"
   },
   "directories": {
     "test": "tests"
@@ -23,6 +20,7 @@
     "axios": "0.25.0",
     "form-data": "4.0.0",
     "moment": "^2.29.4",
+    "ms": "^2.1.3",
     "puppeteer-core": "^13.5.1",
     "puppeteer-worker": "^3.3.1",
     "puppeteer-worker-job-builder": "^2.4.1",
@@ -31,6 +29,7 @@
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.1",
+    "@types/ms": "^0.7.31",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint": "^8.30.0",

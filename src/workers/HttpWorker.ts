@@ -16,32 +16,30 @@ export class HttpWorker {
 
   async start() {
     const puppeteerWorkerController = this.puppeteerWorkerController;
-    const httpWorkerConfig = await axios.get(cfg.httpWorkerPullConfigUrl, { headers: { Authorization: cfg.accessToken } }).then((res) => res.data);
-    const { pollJobUrl, submitJobResultUrl, repeatPollJobsAfter } = httpWorkerConfig;
     loop.infinity(async () => {
-      const jobInfo = await axios.get(pollJobUrl, { headers: { Authorization: cfg.accessToken } }).then((res) => res.data).catch((err) => logger.error(err));
+      const jobInfo = await axios.get(cfg.httpPollJobUrl, { headers: { Authorization: cfg.httpPollJobAccessToken } }).then((res) => res.data).catch((err) => logger.error(err));
       if (!jobInfo) {
         return;
       }
       try {
         const { logs, vars } = await puppeteerWorkerController.do(jobInfo);
-        const body = { id: jobInfo.id, workerId: cfg.workerId, logs, vars };
-        axios.post(submitJobResultUrl, toJson(body), {
+        const body = { id: jobInfo.id, workerId: cfg.id, logs, vars };
+        axios.post(cfg.httpPollJobResponseUrl, toJson(body), {
           headers: {
             "Content-Type": "application/json",
-            Authorization: cfg.accessToken,
+            Authorization: cfg.httpPollJobAccessToken,
           },
         }).catch((err) => logger.error(err));
       } catch (err) {
         logger.error(err);
-        const body = { workerId: cfg.workerId, err: toPrettyErr(err) };
-        axios.post(submitJobResultUrl, toJson(body), {
+        const body = { workerId: cfg.id, err: toPrettyErr(err) };
+        axios.post(cfg.httpPollJobResponseUrl, toJson(body), {
           headers: {
             "Content-Type": "application/json",
-            Authorization: cfg.accessToken,
+            Authorization: cfg.httpPollJobAccessToken,
           },
         }).catch((err1) => logger.error(err1));
       }
-    }, repeatPollJobsAfter);
+    }, cfg.httpPollJobEveryMs);
   }
 }

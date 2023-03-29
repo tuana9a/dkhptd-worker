@@ -38,14 +38,14 @@ export class RabbitWorker {
               const { logs, vars } = await puppeteerWorkerController.do(job, (doing: DoingInfo) => {
                 logger.info(`Doing ${job.id} ${toJson(doing, 2)}`);
                 channel.publish(ExchangeName.WORKER_DOING, "", toBuffer(toJson({
-                  workerId: cfg.workerId,
+                  workerId: cfg.id,
                   doing,
                 })));
               });
               logger.info(`Logs ${job.id} ${toJson(logs, 2)}`);
               channel.sendToQueue(QueueName.PROCESS_JOB_RESULT, toBuffer(toJson({
                 id: job.id,
-                workerId: cfg.workerId,
+                workerId: cfg.id,
                 logs,
                 vars,
               })));
@@ -53,14 +53,14 @@ export class RabbitWorker {
               logger.error(err);
               channel.sendToQueue(QueueName.PROCESS_JOB_RESULT, toBuffer(toJson({
                 id: job.id,
-                workerId: cfg.workerId,
+                workerId: cfg.id,
                 err: toPrettyErr(err),
               })));
             }
             channel.ack(msg);
           }, { noAck: false });
         });
-        setInterval(() => channel.publish(ExchangeName.WORKER_PING, "", toBuffer(toJson({ workerId: cfg.workerId }))), 3000);
+        setInterval(() => channel.publish(ExchangeName.WORKER_PING, "", toBuffer(toJson({ workerId: cfg.id }))), 3000);
       });
     });
   }

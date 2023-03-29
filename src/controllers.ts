@@ -70,17 +70,17 @@ export default class WorkerController {
   }
 
   auto() {
-    if (!this[cfg.workerType]) {
-      throw new InvalidWorkerTypeError(cfg.workerType);
+    if (!this[cfg.type]) {
+      throw new InvalidWorkerTypeError(cfg.type);
     }
-    return this[cfg.workerType]();
+    return this[cfg.type]();
   }
 
   rabbit() {
     return this.rabbitWorker;
   }
 
-  rabbit_v1() {
+  rabbit1() {
     return this.rabbitWorkerV1;
   }
 

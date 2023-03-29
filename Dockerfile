@@ -1,4 +1,4 @@
-FROM node:16.16.0
+FROM node:16.19.1
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer
@@ -31,14 +31,10 @@ COPY tsconfig.json .
 
 RUN npm install
 
-COPY bin bin
-
-RUN chmod +x ./bin/dkhptd-worker
-
-COPY config.json.example config.json
+COPY launch* .
 
 COPY src src
 
 RUN npx tsc
 
-CMD ./bin/dkhptd-worker --config-file config.json
+CMD node launch.js --puppeteer-launch-options-path launchOptions.docker.json

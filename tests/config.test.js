@@ -1,9 +1,9 @@
-const config = require("../src/config");
+const { cfg } = require("../dist/configs");
+const { update } = require("../dist/utils");
 
 describe("test config", () => {
   test("should match default value", () => {
-    config.defaultify();
-    expect(config.toJson()).toEqual({
+    expect(cfg.toJson()).toEqual({
       configFile: undefined,
       workerId: expect.any(String),
       workerType: "http",
@@ -28,12 +28,12 @@ describe("test config", () => {
   });
 
   test("should match updated value", () => {
-    config.update({
+    update(cfg, {
       tmpDir: "otherTmpDir",
       secret: "iloveyou",
       maxTry: 11,
     });
-    expect(config.toJson()).toEqual({
+    expect(cfg.toJson()).toEqual({
       workerType: "http",
       workerId: expect.any(String),
       configFile: undefined,

@@ -18,16 +18,12 @@ export async function launch(initConfig: Config) {
   ioc.scan("dist/");
   ioc.addClass(PuppeteerWorker, "puppeteerWorker", { ignoreDeps: ["browser"] });
   ioc.di();
-
-  if (initConfig.configFile) {
-    update(cfg, JSON.parse(fs.readFileSync(initConfig.configFile, { flag: "r", encoding: "utf-8" })));
-  }
   update(cfg, initConfig);
+  cfg.puppeteerLaunchOptions = JSON.parse(fs.readFileSync(cfg.puppeteerLaunchOptionsPath, { encoding: "utf-8" }));
   correctConfig(cfg);
-
   ensureDirExists(cfg.tmpDir);
   ensureDirExists(cfg.logDir);
-  ensureDirExists(cfg.userDataDir);
+  ensureDirExists(cfg.puppeteerLaunchOptions.userDataDir);
 
   logger.use(cfg.logDest);
   logger.info(cfg.toString());
@@ -63,13 +59,12 @@ export async function launch(initConfig: Config) {
   logger.info(`Loaded Jobs:\n${loadedJobs.reduce((a, c) => `${a}${c.name} -> ${c.filepath}\n`, "")}`);
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const browser = await require("puppeteer-core").launch(cfg.puppeteerLaunchOption);
+  const browser = await require("puppeteer-core").launch(cfg.puppeteerLaunchOptions);
   await ensurePageCount(browser, 1);
 
   const puppeteerWorker: PuppeteerWorker = ioc.getBean(PuppeteerWorker).getInstance();
   puppeteerWorker.setBrowser(browser);
 
-  browser.on("disconnected", () => logger.info("exiting..."));
   browser.on("disconnected", () => logger.error(new PuppeteerDisconnectedError()));
   browser.on("disconnected", () => setTimeout(() => process.exit(0), 1000));
 

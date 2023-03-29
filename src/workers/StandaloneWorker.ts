@@ -15,7 +15,7 @@ export class StandaloneWorker {
 
   async start() {
     const puppeteerWorkerController = this.puppeteerWorkerController;
-    const dir = cfg.scheduleDir;
+    const dir = cfg.schedulesDir;
 
     if (!fs.existsSync(dir)) {
       throw new ScheduleDirNotExistsError(dir);

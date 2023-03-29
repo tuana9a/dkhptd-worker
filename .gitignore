@@ -105,8 +105,3 @@ dist
 
 # @tuana9a
 *tmp*
-.venv/
-__pycache__/
-tmp/
-/config.json
-/schedules/

@@ -1,32 +1,38 @@
 import { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Product } from "puppeteer-core";
 import { toJson } from "./utils";
+import ms from "ms";
 
 const DEFAULT_TMP_DIR = "./tmp/";
 const DEFAULT_LOG_DIR = "./logs/";
 const DEFAULT_JOB_DIR = "./dist/jobs/";
 const DEFAULT_SCHEDULES_DIR = "./schedules.tmp/";
 const DEFAULT_USER_DATA_DIR = "./userdata.tmp/";
+const DEFAULT_LOG_DEST = "cs";
+const DEFAULT_PUPPETEER_LAUNCH_OPTIONS_PATH = "./launchOptions.windows.visible.json";
 
 export class Config {
-  configFile?: string = "config.json";
-  workerId?: string = String(Date.now());
-  workerType?: string = "";
-  tmpDir?: string = DEFAULT_TMP_DIR;
-  logDest?: string = "cs";
-  logDir?: string = DEFAULT_LOG_DIR;
-  secret?: string = String(Date.now());
-  accessToken?: string = "";
-  maxTry?: number = 10;
+  id?: string = String(Date.now());
+  type?: string = "";
+  logDest?: string = DEFAULT_LOG_DEST;
   jobDir?: string = DEFAULT_JOB_DIR;
-  scheduleDir?: string = DEFAULT_SCHEDULES_DIR;
-  userDataDir?: string = DEFAULT_USER_DATA_DIR;
-  httpWorkerPullConfigUrl?: string = "";
-  rabbitmqConnectionString?: string = "";
-  amqpEncryptionKey?: string = "";
-  puppeteerLaunchOption?: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions & {
+  tmpDir?: string = DEFAULT_TMP_DIR;
+  logDir?: string = DEFAULT_LOG_DIR;
+  puppeteerLaunchOptionsPath?: string = DEFAULT_PUPPETEER_LAUNCH_OPTIONS_PATH;
+  puppeteerLaunchOptions?: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions & {
     product?: Product;
     extraPrefsFirefox?: Record<string, unknown>;
   } = {};
+  // standalone worker
+  schedulesDir?: string = DEFAULT_SCHEDULES_DIR;
+  // http worker
+  httpPollJobAccessToken?: string = "";
+  httpPollJobUrl?: string = "";
+  httpPollJobResponseUrl?: string = "";
+  httpPollJobEveryMs?: number = ms("15s");
+  // standalone worker
+  rabbitmqConnectionString?: string = "";
+  amqpEncryptionKey?: string = "";
+  // other opts
   logWorkerDoing?: boolean = false;
 
   toJson() {
@@ -64,15 +70,12 @@ export const QueueName = {
 };
 
 export const correctConfig = (c: Config) => {
-  c.workerId = c.workerId || `worker${Date.now()}`;
-  c.workerType = c.workerType || "http";
+  c.id = c.id || `worker${Date.now()}`;
   c.tmpDir = c.tmpDir || DEFAULT_TMP_DIR;
-  c.scheduleDir = c.scheduleDir || DEFAULT_SCHEDULES_DIR;
-  c.userDataDir = c.userDataDir || DEFAULT_USER_DATA_DIR;
+  c.schedulesDir = c.schedulesDir || DEFAULT_SCHEDULES_DIR;
   c.logDir = c.logDir || DEFAULT_LOG_DIR;
-  c.logDest = c.logDest || "cs";
-  c.maxTry = c.maxTry || 10;
-  c.puppeteerLaunchOption = c.puppeteerLaunchOption || {};
-  c.puppeteerLaunchOption.userDataDir = c.puppeteerLaunchOption.userDataDir || c.userDataDir;
+  c.logDest = c.logDest || DEFAULT_LOG_DEST;
+  c.puppeteerLaunchOptions = c.puppeteerLaunchOptions || {};
+  c.puppeteerLaunchOptions.userDataDir = c.puppeteerLaunchOptions.userDataDir || DEFAULT_USER_DATA_DIR;
   return c;
 };
