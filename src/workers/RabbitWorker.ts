@@ -15,12 +15,12 @@ export class RabbitWorker {
     amqp.connect(cfg.rabbitmqConnectionString, (error0, connection) => {
       if (error0) {
         logger.error(error0);
-        return;
+        return process.exit(0);
       }
       connection.createChannel((error1, channel) => {
         if (error1) {
           logger.error(error1);
-          return;
+          return process.exit(0);
         }
         channel.prefetch(1);
         channel.assertExchange(ExchangeName.WORKER_PING, "fanout", {});
