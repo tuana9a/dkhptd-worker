@@ -30,7 +30,7 @@ export class ResolveCaptchaAction extends Action {
 
   async run() {
     try {
-      const { fs, axios, FormData } = this.__context.libs;
+      const { fs, axios, FormData } = this.currentContext.libs;
       const form = new FormData();
       form.append("file", fs.createReadStream(this.imgPath));
       const predict = await axios

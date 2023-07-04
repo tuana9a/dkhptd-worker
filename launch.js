@@ -1,6 +1,8 @@
 const ms = require("ms");
 const yargs = require("yargs");
 
+require('dotenv').config();
+
 const { launch } = require("./dist");
 
 const parser = yargs
@@ -68,23 +70,23 @@ const parser = yargs
     requiresArg: false,
     default: false,
   });
-const opts = parser.argv;
+
 launch({
-  id: process.env.ID || opts.id,
-  type: process.env.TYPE || opts.type,
-  logDest: process.env.LOG_DEST || opts["log-dest"],
-  jobDir: process.env.JOB_DIR || opts["job-dir"],
-  puppeteerLaunchOptionsPath: process.env.PUPPETEER_LAUNCH_OPTIONS_PATH || opts["puppeteer-launch-options-path"],
+  id: process.env.ID || parser.argv.id,
+  type: process.env.TYPE || parser.argv.type,
+  logDest: process.env.LOG_DEST || parser.argv["log-dest"],
+  jobDir: process.env.JOB_DIR || parser.argv["job-dir"],
+  puppeteerLaunchOptionsPath: process.env.PUPPETEER_LAUNCH_OPTIONS_PATH || parser.argv["puppeteer-launch-options-path"],
   // http worker
-  httpPollJobUrl: process.env.HTTP_POLL_JOB_URL || opts["http-poll-job-url"],
-  httpPollJobAccessToken: process.env.HTTP_POLL_JOB_ACCESS_TOKEN || opts["http-poll-job-access-token"],
-  httpPollJobResponseUrl: process.env.HTTP_POLL_JOB_RESPONSE_URL || opts["http-poll-job-response-url"],
-  httpPollJobEveryMs: process.env.HTTP_POLL_JOB_EVERY_MS || opts["http-poll-job-every-ms"],
+  httpPollJobUrl: process.env.HTTP_POLL_JOB_URL || parser.argv["http-poll-job-url"],
+  httpPollJobAccessToken: process.env.HTTP_POLL_JOB_ACCESS_TOKEN || parser.argv["http-poll-job-access-token"],
+  httpPollJobResponseUrl: process.env.HTTP_POLL_JOB_RESPONSE_URL || parser.argv["http-poll-job-response-url"],
+  httpPollJobEveryMs: process.env.HTTP_POLL_JOB_EVERY_MS || parser.argv["http-poll-job-every-ms"],
   // rabbit worker
-  rabbitmqConnectionString: process.env.RABBITMQ_CONNECTION_STRING || opts["rabbitmq-connection-string"],
-  amqpEncryptionKey: process.env.AMQP_ENCRYPTION_KEY || opts["amqp-encryption-key"],
+  rabbitmqConnectionString: process.env.RABBITMQ_CONNECTION_STRING || parser.argv["rabbitmq-connection-string"],
+  amqpEncryptionKey: process.env.AMQP_ENCRYPTION_KEY || parser.argv["amqp-encryption-key"],
   // standalone
-  schedulesDir: process.env.SCHEDULES_DIR || opts["schedules-dir"],
+  schedulesDir: process.env.SCHEDULES_DIR || parser.argv["schedules-dir"],
   // other
-  logWorkerDoing: process.env.LOG_WORKER_DOING || opts["log-worker-doing"],
+  logWorkerDoing: process.env.LOG_WORKER_DOING || parser.argv["log-worker-doing"],
 });
