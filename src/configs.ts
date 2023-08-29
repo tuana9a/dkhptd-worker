@@ -1,6 +1,5 @@
 import { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Product } from "puppeteer-core";
 import { toJson } from "./utils";
-import ms from "ms";
 
 const DEFAULT_TMP_DIR = "./tmp/";
 const DEFAULT_LOG_DIR = "./logs/";
@@ -17,6 +16,7 @@ export class Config {
   jobDir?: string = DEFAULT_JOB_DIR;
   tmpDir?: string = DEFAULT_TMP_DIR;
   logDir?: string = DEFAULT_LOG_DIR;
+  logWorkerDoing?: boolean = false;
   puppeteerLaunchOptionsPath?: string = DEFAULT_PUPPETEER_LAUNCH_OPTIONS_PATH;
   puppeteerLaunchOptions?: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions & {
     product?: Product;
@@ -24,16 +24,9 @@ export class Config {
   } = {};
   // standalone worker
   schedulesDir?: string = DEFAULT_SCHEDULES_DIR;
-  // http worker
-  httpPollJobAccessToken?: string = "";
-  httpPollJobUrl?: string = "";
-  httpPollJobResponseUrl?: string = "";
-  httpPollJobEveryMs?: number = ms("15s");
-  // standalone worker
+  // rabbit worker
   rabbitmqConnectionString?: string = "";
   amqpEncryptionKey?: string = "";
-  // other opts
-  logWorkerDoing?: boolean = false;
 
   toJson() {
     return {

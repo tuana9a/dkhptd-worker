@@ -1,4 +1,3 @@
-const ms = require("ms");
 const yargs = require("yargs");
 
 require('dotenv').config();
@@ -14,7 +13,7 @@ const parser = yargs
   .option("type", {
     type: "string",
     requiresArg: false,
-    choices: ["http", "rabbit", "rabbit1", "standalone"],
+    choices: ["rabbit", "rabbit1", "standalone"],
   })
   .option("job-dir", {
     type: "string",
@@ -46,25 +45,6 @@ const parser = yargs
     type: "string",
     requiresArg: false,
   })
-  // http worker
-  .option("http-poll-job-access-token", {
-    type: "string",
-    requiresArg: false,
-  })
-  .option("http-poll-job-url", {
-    type: "string",
-    requiresArg: false,
-  })
-  .option("http-poll-job-response-url", {
-    type: "string",
-    requiresArg: false,
-  })
-  .option("http-poll-job-every-ms", {
-    type: "number",
-    requiresArg: false,
-    default: ms("15s"),
-  })
-  // other opts
   .option("log-worker-doing", {
     type: "boolean",
     requiresArg: false,
@@ -76,17 +56,11 @@ launch({
   type: process.env.TYPE || parser.argv.type,
   logDest: process.env.LOG_DEST || parser.argv["log-dest"],
   jobDir: process.env.JOB_DIR || parser.argv["job-dir"],
+  logWorkerDoing: process.env.LOG_WORKER_DOING || parser.argv["log-worker-doing"],
   puppeteerLaunchOptionsPath: process.env.PUPPETEER_LAUNCH_OPTIONS_PATH || parser.argv["puppeteer-launch-options-path"],
-  // http worker
-  httpPollJobUrl: process.env.HTTP_POLL_JOB_URL || parser.argv["http-poll-job-url"],
-  httpPollJobAccessToken: process.env.HTTP_POLL_JOB_ACCESS_TOKEN || parser.argv["http-poll-job-access-token"],
-  httpPollJobResponseUrl: process.env.HTTP_POLL_JOB_RESPONSE_URL || parser.argv["http-poll-job-response-url"],
-  httpPollJobEveryMs: process.env.HTTP_POLL_JOB_EVERY_MS || parser.argv["http-poll-job-every-ms"],
   // rabbit worker
   rabbitmqConnectionString: process.env.RABBITMQ_CONNECTION_STRING || parser.argv["rabbitmq-connection-string"],
   amqpEncryptionKey: process.env.AMQP_ENCRYPTION_KEY || parser.argv["amqp-encryption-key"],
   // standalone
   schedulesDir: process.env.SCHEDULES_DIR || parser.argv["schedules-dir"],
-  // other
-  logWorkerDoing: process.env.LOG_WORKER_DOING || parser.argv["log-worker-doing"],
 });

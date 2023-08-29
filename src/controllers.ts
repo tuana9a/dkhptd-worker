@@ -9,7 +9,6 @@ import { JobNotFoundError, InvalidJobInfoError, InvalidWorkerTypeError } from ".
 import { PuppeteerWorker } from "puppeteer-worker";
 import { SupportJobsDb } from "./repos";
 import { JobRequest } from "./types";
-import { HttpWorker } from "./workers/HttpWorker";
 import { RabbitWorkerV1 } from "./workers/RabbitWorkerV1";
 import { StandaloneWorker } from "./workers/StandaloneWorker";
 import { RabbitWorker } from "./workers/RabbitWorker";
@@ -62,7 +61,6 @@ export class PuppeteerWorkerController {
 @Component
 export default class WorkerController {
   constructor(
-    private httpWorker: HttpWorker,
     private rabbitWorker: RabbitWorker,
     private rabbitWorkerV1: RabbitWorkerV1,
     private standaloneWorker: StandaloneWorker,
@@ -82,10 +80,6 @@ export default class WorkerController {
 
   rabbit1() {
     return this.rabbitWorkerV1;
-  }
-
-  http() {
-    return this.httpWorker;
   }
 
   standalone() {
