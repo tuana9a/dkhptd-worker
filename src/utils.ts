@@ -2,6 +2,7 @@ import fs from "fs";
 import amqp from "amqplib/callback_api";
 import axios from "axios";
 import path from "path";
+import { Browser } from "puppeteer-core";
 
 /* eslint-disable no-param-reassign */
 export const toBuffer = (input: string) => Buffer.from(input);
@@ -61,3 +62,10 @@ export const downloadJobs = async (url: string, jobDir: string, headers = {}) =>
   const infos = response.data;
   return Promise.all(infos.map((info) => downloadFile(info.downloadUrl, path.join(jobDir, info.fileName), { headers })));
 };
+export async function ensurePageCount(browser: Browser, count: number) {
+  const pages = await browser.pages();
+  const missing = Math.max(0, count - pages.length);
+  for (let i = 0; i < missing; i++) {
+    await browser.newPage();
+  }
+}

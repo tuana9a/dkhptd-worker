@@ -16,7 +16,7 @@ import {
   Params,
   Action,
   RequiredParamError,
-} from "puppeteer-worker-job-builder";
+} from "../job-builder";
 
 export class ResolveCaptchaAction extends Action {
   imgPath: string;

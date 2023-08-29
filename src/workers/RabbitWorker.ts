@@ -2,11 +2,9 @@ import amqp from "amqplib/callback_api";
 import logger from "../logger";
 import { cfg, ExchangeName, QueueName } from "../configs";
 import { PuppeteerWorkerController } from "../controllers";
-import { Component } from "tu9nioc";
 import { toBuffer, toJson } from "../utils";
-import { DoingInfo } from "puppeteer-worker-job-builder";
+import { DoingInfo } from "../job-builder";
 
-@Component
 export class RabbitWorker {
   constructor(private puppeteerWorkerController: PuppeteerWorkerController) { }
 

@@ -1,12 +1,11 @@
 import fs from "fs";
 import osiax from "axios";
 import FormData from "form-data";
-import { isValidJob } from "puppeteer-worker-job-builder";
-import { Component } from "tu9nioc";
+import { isValidJob } from "./job-builder";
 
 import { cfg } from "./configs";
 import { JobNotFoundError, InvalidJobInfoError, InvalidWorkerTypeError } from "./errors";
-import { PuppeteerWorker } from "puppeteer-worker";
+import { PuppeteerWorker } from "./puppeteer-worker";
 import { SupportJobsDb } from "./repos";
 import { JobRequest } from "./types";
 import { RabbitWorkerV1 } from "./workers/RabbitWorkerV1";
@@ -17,7 +16,6 @@ import { toJson } from "./utils";
 
 const axios = osiax.create();
 
-@Component
 export class PuppeteerWorkerController {
   constructor(private puppeteerWorker: PuppeteerWorker, private supportJobsDb: SupportJobsDb) { }
 
@@ -58,7 +56,6 @@ export class PuppeteerWorkerController {
   }
 }
 
-@Component
 export default class WorkerController {
   constructor(
     private rabbitWorker: RabbitWorker,

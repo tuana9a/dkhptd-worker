@@ -16,7 +16,7 @@ import {
   TextContent,
   Action,
   RequiredParamError
-} from "puppeteer-worker-job-builder";
+} from "../job-builder";
 
 
 class ResolveCaptchaAction extends Action {

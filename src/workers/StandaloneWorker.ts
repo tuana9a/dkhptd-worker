@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { Component } from "tu9nioc";
 import { cfg } from "../configs";
 import { PuppeteerWorkerController } from "../controllers";
 import { ScheduleDirNotExistsError } from "../errors";
@@ -8,8 +7,6 @@ import logger from "../logger";
 import loop from "../loop";
 import { toJson } from "../utils";
 
-
-@Component
 export class StandaloneWorker {
   constructor(private puppeteerWorkerController: PuppeteerWorkerController) { }
 

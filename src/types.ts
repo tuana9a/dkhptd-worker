@@ -1,4 +1,4 @@
-import { Job } from "puppeteer-worker-job-builder";
+import { Job } from "./job-builder";
 
 export type JobSupplier = () => Job;
 

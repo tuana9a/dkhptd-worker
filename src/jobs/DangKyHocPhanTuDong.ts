@@ -18,7 +18,7 @@ import {
   TextContent,
   Action,
   RequiredParamError,
-} from "puppeteer-worker-job-builder";
+} from "../job-builder";
 
 const toPrettyErr = (err: Error) => ({
   name: err.name,

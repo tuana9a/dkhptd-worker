@@ -2,22 +2,21 @@
 
 import fs from "fs";
 import path from "path";
-import { ioc } from "tu9nioc";
-import { ensurePageCount, PuppeteerWorker } from "puppeteer-worker";
-import { isValidJob } from "puppeteer-worker-job-builder";
+import { PuppeteerWorker } from "./puppeteer-worker";
+import { isValidJob } from "./job-builder";
 
 import { SupportJobsDb } from "./repos";
-import WorkerController from "./controllers";
+import WorkerController, { PuppeteerWorkerController } from "./controllers";
 import { PuppeteerDisconnectedError } from "./errors";
 import logger from "./logger";
-import { ensureDirExists, update } from "./utils";
+import { ensureDirExists, update, ensurePageCount } from "./utils";
 import { JobSupplier } from "./types";
 import { cfg, Config, correctConfig } from "./configs";
+import { RabbitWorkerV1 } from "./workers/RabbitWorkerV1";
+import { StandaloneWorker } from "./workers/StandaloneWorker";
+import { RabbitWorker } from "./workers/RabbitWorker";
 
 export async function launch(initConfig: Config) {
-  ioc.scan("dist/");
-  ioc.addClass(PuppeteerWorker, "puppeteerWorker", { ignoreDeps: ["browser"] });
-  ioc.di();
   update(cfg, initConfig);
   cfg.puppeteerLaunchOptions = JSON.parse(fs.readFileSync(cfg.puppeteerLaunchOptionsPath, { encoding: "utf-8" }));
   correctConfig(cfg);
@@ -27,9 +26,13 @@ export async function launch(initConfig: Config) {
 
   logger.use(cfg.logDest);
   logger.info(cfg.toString());
-
-  const workerController: WorkerController = ioc.getBean("workerController").getInstance();
-  const supportJobsDb: SupportJobsDb = ioc.getBean("supportJobsDb").getInstance();
+  const puppeteerWorker = new PuppeteerWorker();
+  const supportJobsDb = new SupportJobsDb();
+  const puppeteerWorkerController = new PuppeteerWorkerController(puppeteerWorker, supportJobsDb);
+  const rabbitWorker = new RabbitWorker(puppeteerWorkerController);
+  const rabbitWorkerV1 = new RabbitWorkerV1(puppeteerWorkerController);
+  const standaloneWorker = new StandaloneWorker(puppeteerWorkerController);
+  const workerController = new WorkerController(rabbitWorker, rabbitWorkerV1, standaloneWorker);
   const lengthOfJs = ".js".length;
   const loadedJobs = [];
 
@@ -62,7 +65,6 @@ export async function launch(initConfig: Config) {
   const browser = await require("puppeteer-core").launch(cfg.puppeteerLaunchOptions);
   await ensurePageCount(browser, 1);
 
-  const puppeteerWorker: PuppeteerWorker = ioc.getBean(PuppeteerWorker).getInstance();
   puppeteerWorker.setBrowser(browser);
 
   browser.on("disconnected", () => logger.error(new PuppeteerDisconnectedError()));

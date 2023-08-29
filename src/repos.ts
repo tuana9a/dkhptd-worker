@@ -1,7 +1,5 @@
-import { Component } from "tu9nioc";
 import { JobSupplier } from "./types";
 
-@Component("supportJobsDb", { ignoreDeps: ["db"] })
 export class SupportJobsDb {
   db: Map<string, JobSupplier>;
 

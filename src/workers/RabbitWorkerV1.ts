@@ -3,12 +3,10 @@ import crypto from "crypto";
 import logger from "../logger";
 import { cfg, ExchangeName, QueueName } from "../configs";
 import { PuppeteerWorkerController } from "../controllers";
-import { Component } from "tu9nioc";
 import { c } from "../cypher";
 import { toBuffer, toJson } from "../utils";
-import { DoingInfo } from "puppeteer-worker-job-builder";
+import { DoingInfo } from "../job-builder";
 
-@Component
 export class RabbitWorkerV1 {
   constructor(private puppeteerWorkerController: PuppeteerWorkerController) { }
 
