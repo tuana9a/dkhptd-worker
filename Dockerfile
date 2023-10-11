@@ -29,4 +29,4 @@ COPY src src
 COPY launch* .
 COPY tsconfig.json .
 RUN npm run build
-CMD node launch.js --puppeteer-launch-options-path launchOptions.docker.json
+CMD ["node", "launch.js", "--puppeteer-launch-options-path", "launchOptions.docker.json"]
