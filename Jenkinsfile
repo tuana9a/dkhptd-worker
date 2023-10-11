@@ -18,6 +18,7 @@ pipeline {
                     // Build the Docker image
                     sh 'docker build --pull . \
                     -t $IMAGE_NAME:$BUILD_TAG_DAILY \
+                    -t $IMAGE_NAME:$BUILD_TAG_SECONDLY \
                     -t $IMAGE_NAME:$BUILD_TAG_MONTHLY \
                     -t $IMAGE_NAME:latest'
                 }
@@ -28,6 +29,7 @@ pipeline {
                 script {
                     // Push the Docker image to a Docker registry
                     sh 'docker push $IMAGE_NAME:latest'
+                    sh 'docker push $IMAGE_NAME:$BUILD_TAG_SECONDLY'
                     sh 'docker push $IMAGE_NAME:$BUILD_TAG_DAILY'
                     sh 'docker push $IMAGE_NAME:$BUILD_TAG_MONTHLY'
                 }
